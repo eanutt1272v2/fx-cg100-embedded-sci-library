@@ -49,24 +49,23 @@ For full setup instructions and desktop testing, see [Running Scripts](#running-
 
 #### 2. Selecting a script
 
-- Every script in this repository targets the fx-CG100 and is self-contained.
-- Select by topic and expected runtime. Fractal renderers and dense simulations
-  carry significantly longer render times than algebraic or statistical scripts.
-- When testing on-device for the first time, we recommend you accept the default
-  parameters and increase complexity only once the script runs successfully.
+- Every core application in this repository targets the fx-CG100.
+- Select by topic and expected runtime. Heavy mathematical visualizers (like fractal renderers or orbital simulation paths) carry significantly longer computation loops than algebraic scripts.
+- Note that advanced scripts (such as the quantum orbital visualizer `psi_pico.py`) require their companion dependency files (`psi_pico_lib.py`) to be transferred to the same folder to execute successfully.
+- When testing on-device for the first time, accept the default parameters by pressing **[EXE]** on empty prompts, and increase complexity only once the base script runs successfully.
 
 #### 3. Transferring files
 
-- Copy the chosen `.py` file from this repository to the calculator volume.
-- Because scripts are standalone, only one file is typically required at a time.
-- Keep a local backup of calculator storage before any large file transfer.
+- Copy the chosen `.py` file (and its required `_lib.py` backend file, if applicable) from this repository into the main root storage directory or designated folders of the mounted calculator drive volume.
+- Keep a local backup of your calculator's storage files before performing any major bulk file transfers.
 
 #### 4. Execution
 
-1. Open the Python app on the calculator.
-2. Navigate to the transferred script and run it.
-3. Follow the on-screen input prompts.
-4. The script will pause smartly before exiting so the output remains on screen for the user.
+1. Safely eject the USB-C cable from your computer to return the calculator to its native operating system mode.
+2. Select the **Python** app icon from the calculator's main home icon grid and press **[EXE]**.
+3. Use the arrow pad to navigate to the transferred script from the on-screen directory list.
+4. Press the **[F6]** function key (**RUN**) or the **[EXE]** key to boot the script engine.
+5. Provide your values at the on-screen shell input prompts. The environment will pause upon completion to keep the generated result pinned to your screen.
 
 #### 5. Troubleshooting
 
