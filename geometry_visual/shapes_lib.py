@@ -20,13 +20,16 @@ def require_positive(*values):
 
 
 def int_ge(value, minimum, name):
+    if int(value) != value:
+        raise ValueError(name + " must be an integer >= " + str(minimum))
     ivalue = int(value)
-    if ivalue != value or ivalue < minimum:
+    if ivalue < minimum:
         raise ValueError(name + " must be an integer >= " + str(minimum))
     return ivalue
 
 
 def area_triangle_heron(a, b, c):
+    require_positive(a, b, c)
     s = 0.5 * (a + b + c)
     area_sq = s * (s - a) * (s - b) * (s - c)
     if area_sq <= 0:
@@ -35,58 +38,63 @@ def area_triangle_heron(a, b, c):
 
 
 def area_regular_polygon(n, s):
+    n = int_ge(n, 3, "n")
+    require_positive(s)
     return n * s * s / (4.0 * math.tan(PI / n))
 
 
 def perimeter_regular_polygon(n, s):
+    n = int_ge(n, 3, "n")
+    require_positive(s)
     return n * s
 
 
 def prism_metrics(base_area, base_perimeter, length):
+    require_positive(base_area, base_perimeter, length)
     volume = base_area * length
     surface_area = 2.0 * base_area + base_perimeter * length
     return volume, surface_area
 
 
 def pyramid_metrics(base_area, base_perimeter, height, slant_height):
+    require_positive(base_area, base_perimeter, height, slant_height)
     volume = base_area * height / 3.0
     surface_area = base_area + 0.5 * base_perimeter * slant_height
     return volume, surface_area
 
 
-def f_square(s):
-    require_positive(s)
-    return pack(("A", s * s), ("P", 4.0 * s), ("Diag", s * math.sqrt(2.0)))
+def f_square(side):
+    require_positive(side)
+    return pack(("A", side * side), ("P", 4.0 * side), ("Diag", side * math.sqrt(2.0)))
 
 
-def f_rectangle(w, h):
-    require_positive(w, h)
-    return pack(("A", w * h), ("P", 2.0 * (w + h)), ("Diag", math.sqrt(w * w + h * h)))
+def f_rectangle(width, height):
+    require_positive(width, height)
+    return pack(("A", width * height), ("P", 2.0 * (width + height)), ("Diag", math.sqrt(width * width + height * height)))
 
 
-def f_triangle_bh(b, h):
-    require_positive(b, h)
-    return pack(("A", 0.5 * b * h))
+def f_triangle_bh(base, height):
+    require_positive(base, height)
+    return pack(("A", 0.5 * base * height))
 
 
 def f_triangle_sss(a, b, c):
-    require_positive(a, b, c)
     return pack(("A", area_triangle_heron(a, b, c)), ("P", a + b + c))
 
 
-def f_equilateral_triangle(s):
-    require_positive(s)
-    return pack(("A", math.sqrt(3.0) * s * s / 4.0), ("P", 3.0 * s), ("H", math.sqrt(3.0) * s / 2.0))
+def f_equilateral_triangle(side):
+    require_positive(side)
+    return pack(("A", math.sqrt(3.0) * side * side / 4.0), ("P", 3.0 * side), ("H", math.sqrt(3.0) * side / 2.0))
 
 
-def f_parallelogram(b, h, side):
-    require_positive(b, h, side)
-    return pack(("A", b * h), ("P", 2.0 * (b + side)))
+def f_parallelogram(base, height, side):
+    require_positive(base, height, side)
+    return pack(("A", base * height), ("P", 2.0 * (base + side)))
 
 
-def f_trapezium(a, b, h, c, d):
-    require_positive(a, b, h, c, d)
-    return pack(("A", 0.5 * (a + b) * h), ("P", a + b + c + d))
+def f_trapezium(a, b, height, side1, side2):
+    require_positive(a, b, height, side1, side2)
+    return pack(("A", 0.5 * (a + b) * height), ("P", a + b + side1 + side2))
 
 
 def f_rhombus(d1, d2):
@@ -95,9 +103,9 @@ def f_rhombus(d1, d2):
     return pack(("A", 0.5 * d1 * d2), ("P", 4.0 * side), ("Side", side))
 
 
-def f_kite(d1, d2, a, b):
-    require_positive(d1, d2, a, b)
-    return pack(("A", 0.5 * d1 * d2), ("P", 2.0 * (a + b)))
+def f_kite(d1, d2, side1, side2):
+    require_positive(d1, d2, side1, side2)
+    return pack(("A", 0.5 * d1 * d2), ("P", 2.0 * (side1 + side2)))
 
 
 def f_circle(r):
@@ -111,7 +119,9 @@ def f_semicircle(r):
 
 
 def f_sector(r, deg):
-    require_positive(r, deg)
+    require_positive(r)
+    if deg <= 0 or deg > 360:
+        raise ValueError("Degrees must be in the range 0 < deg <= 360")
     theta = deg * PI / 180.0
     arc = r * theta
     return pack(("A", 0.5 * r * r * theta), ("Arc", arc), ("P", 2.0 * r + arc))
@@ -125,8 +135,8 @@ def f_ellipse(a, b):
 
 
 def f_regular_polygon(n, s):
-    require_positive(s)
     n = int_ge(n, 3, "n")
+    require_positive(s)
     area = area_regular_polygon(n, s)
     perim = perimeter_regular_polygon(n, s)
     apothem = s / (2.0 * math.tan(PI / n))
@@ -140,24 +150,22 @@ def f_annulus(R, r):
     return pack(("A", PI * (R * R - r * r)), ("OuterC", 2.0 * PI * R), ("InnerC", 2.0 * PI * r))
 
 
-def f_cube(s):
-    require_positive(s)
-    return pack(("V", s * s * s), ("SA", 6.0 * s * s), ("Diag", s * math.sqrt(3.0)))
+def f_cube(side):
+    require_positive(side)
+    return pack(("V", side * side * side), ("SA", 6.0 * side * side), ("Diag", side * math.sqrt(3.0)))
 
 
-def f_cuboid(l, w, h):
-    require_positive(l, w, h)
-    return pack(("V", l * w * h), ("SA", 2.0 * (l * w + l * h + w * h)), ("Diag", math.sqrt(l * l + w * w + h * h)))
+def f_cuboid(length, width, height):
+    require_positive(length, width, height)
+    return pack(("V", length * width * height), ("SA", 2.0 * (length * width + length * height + width * height)), ("Diag", math.sqrt(length * length + width * width + height * height)))
 
 
 def f_prism(base_area, base_perimeter, length):
-    require_positive(base_area, base_perimeter, length)
     volume, surface_area = prism_metrics(base_area, base_perimeter, length)
     return pack(("V", volume), ("SA", surface_area))
 
 
 def f_triangular_prism(a, b, c, length):
-    require_positive(a, b, c, length)
     base_area = area_triangle_heron(a, b, c)
     base_perimeter = a + b + c
     volume, surface_area = prism_metrics(base_area, base_perimeter, length)
@@ -197,14 +205,13 @@ def f_hemisphere(r):
 
 
 def f_pyramid(base_area, base_perimeter, h, slant):
-    require_positive(base_area, base_perimeter, h, slant)
     volume, surface_area = pyramid_metrics(base_area, base_perimeter, h, slant)
     return pack(("V", volume), ("SA", surface_area))
 
 
-def f_tetrahedron(s):
-    require_positive(s)
-    return pack(("V", s * s * s / (6.0 * math.sqrt(2.0))), ("SA", math.sqrt(3.0) * s * s))
+def f_tetrahedron(side):
+    require_positive(side)
+    return pack(("V", side * side * side / (6.0 * math.sqrt(2.0))), ("SA", math.sqrt(3.0) * side * side))
 
 
 def f_torus(R, r):
@@ -214,11 +221,13 @@ def f_torus(R, r):
     return pack(("V", 2.0 * PI * PI * R * r * r), ("SA", 4.0 * PI * PI * R * r))
 
 
-def f_frustum_pyramid(A1, A2, P1, P2, h, slant):
-    require_positive(A1, A2, P1, P2, h, slant)
-    volume = h * (A1 + A2 + math.sqrt(A1 * A2)) / 3.0
-    lateral = 0.5 * (P1 + P2) * slant
-    surface_area = A1 + A2 + lateral
+def f_frustum_pyramid(base_area, top_area, base_perimeter, top_perimeter, height, slant_height):
+    require_positive(base_area, top_area, base_perimeter, top_perimeter, height, slant_height)
+    if base_area <= top_area:
+        raise ValueError("Base area must be greater than top area")
+    volume = height * (base_area + top_area + math.sqrt(base_area * top_area)) / 3.0
+    lateral = 0.5 * (base_perimeter + top_perimeter) * slant_height
+    surface_area = base_area + top_area + lateral
     return pack(("V", volume), ("SA", surface_area), ("Lateral", lateral))
 
 
@@ -260,6 +269,6 @@ SHAPES_3D = [
     ("Pyramid (general)", f_pyramid, ["Base Area", "Base Perim", "Height", "Slant"]),
     ("Regular Tetrahedron", f_tetrahedron, ["Side"]),
     ("Torus", f_torus, ["Major R", "Minor r"]),
-    ("Frustum Pyramid", f_frustum_pyramid, ["A1", "A2", "P1", "P2", "Height", "Slant"]),
+    ("Frustum Pyramid", f_frustum_pyramid, ["Base Area", "Top Area", "Base Perim", "Top Perim", "Height", "Slant"]),
     ("Spherical Shell", f_spherical_shell, ["Outer R", "Inner r"]),
 ]
