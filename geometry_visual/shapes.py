@@ -1,7 +1,7 @@
 # Draw and explore basic geometric shapes.
 
 from casioplot import clear_screen, draw_string, show_screen
-from shape_formulas import SHAPES_2D, SHAPES_3D
+from shapes_lib import SHAPES_2D, SHAPES_3D
 
 try:
     from casioplot import getkey
