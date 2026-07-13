@@ -1,6 +1,6 @@
 # Casio fx-CG100 MicroPython Scripts
 
-An open-source library of standalone MicroPython scripts designed specifically for the Casio fx-CG100 calculator, covering mathematical visualisation, fractal rendering, number theory, physics simulation and modelling, utilities, and other topics/spheres of study. Scripts are aimed predominantly towards GCSE and A-level mathematics, science, and visualisation, though several fall outside those curricula, and the repository is organised by category for easy reuse and extension.
+An open-source library of standalone MicroPython scripts designed specifically for the Casio fx-CG100 calculator, covering mathematical visualisation, fractal rendering, number theory, physics simulation and modelling, utilities, and other topics of study.
 
 ---
 
@@ -20,15 +20,13 @@ For full setup instructions and desktop testing, see [Running Scripts](#running-
 | Folder                    | Scripts | Theme                                         | Example scripts                                               |
 | ------------------------- | ------: | --------------------------------------------- | ------------------------------------------------------------- |
 | `fractals_chaos/`         |       8 | Fractals and chaotic systems                  | `mandelbrot_set.py`, `julia_set.py`, `burning_ship.py`        |
-| `number_theory/`          |      16 | Primes, modular arithmetic, integer functions | `prime_sieve_eratosthenes.py`, `chinese_remainder.py`         |
+| `number_theory/`          |       9 | Primes, modular arithmetic, integer functions | `prime_sieve_eratosthenes.py`                                  |
 | `geometry_visual/`        |       8 | Geometry calculators and curve visualisation  | `shapes.py`, `triangle_trig_solver.py`, `lissajous_curves.py` |
-| `calculus_numerical/`     |       7 | Calculus and numerical methods                | `newton_raphson.py`, `numerical_integration.py`               |
-| `physics/`                |       7 | Classical physics models                      | `projectile_motion.py`, `simple_harmonic_motion.py`           |
+| `calculus_numerical/`     |       5 | Calculus and numerical methods                | `newton_raphson.py`, `numerical_integration.py`               |
+| `physics/`                |       7 | Classical physics models                      | `projectile_motion.py`, `simple_harmonic_motion.py`, `psi_pico.py` |
 | `probability_statistics/` |       4 | Random processes and distributions            | `dice_roll_distribution.py`, `monte_carlo_pi.py`              |
 | `cellular_automata/`      |       3 | Cellular and agent automata                   | `conway_gol.py`, `langton_ant.py`                             |
-| `sequences_series/`       |       3 | Integer sequences and series                  | `collatz_sequence.py`, `fibonacci_golden_ratio.py`            |
-| `cryptography/`           |       2 | Classical ciphers                             | `caesar_cipher.py`, `cipher_vigenere.py`                      |
-| `chemistry/`              |       1 | Chemistry utility                             | `chemistry_molar.py`                                          |
+| `sequences_series/`      |       3 | Integer sequences and series                  | `collatz_sequence.py`, `fibonacci_golden_ratio.py`            |
 | `signal_processing/`      |       1 | Fourier synthesis                             | `fourier_synth.py`                                            |
 | `algorithms_visual/`      |       1 | Algorithm visualisation                       | `sorting_visual.py`                                           |
 
@@ -74,6 +72,7 @@ For full setup instructions and desktop testing, see [Running Scripts](#running-
 | Symptom                | Likely cause                                      | Resolution                                                                       |
 | ---------------------- | ------------------------------------------------- | -------------------------------------------------------------------------------- |
 | `Module not found`     | Script imports a desktop-only package             | Choose a `casioplot`-based script instead                                        |
+| `AttributeError` or crash when executing a script using `matplotlib.pyplot` | The script is attempting to call desktop-exclusive functions like `bar()`, `grid()`, or `text()` which do not exist within Casio's embedded OEM subset | Rewrite the graph logic to map coordinates using only the calculator-supported primitives: `plot()`, `axis()`, and `show()` |
 | Slow render or timeout | Parameter values too large for on-device hardware | Reduce grid size, iteration count, or step resolution — or simply wait patiently |
 | Input or value error   | Value outside the range expected by the script    | Re-run and supply values within the ranges shown by shell prompts                |
 
@@ -85,23 +84,15 @@ Run any script directly from the repository root:
 
 ```bash
 python3 fractals_chaos/mandelbrot_set.py
-python3 geometry_visual/shapes.py
+python3 geometry_visual/complex_visualiser.py
 python3 number_theory/prime_sieve_eratosthenes.py
 ```
 
 If working inside a virtual environment:
 
 ```bash
-./casio_env/bin/python geometry_visual/shapes.py
+./casio_env/bin/python geometry_visual/shapes_lib.py
 ```
-
----
-
-## Important Notes
-
-These scripts are educational and intellectual tools. They are **not** intended as production-quality
-scientific software and have not been rigorously tested and validated to the standard required for
-research or professional use.
 
 ---
 
