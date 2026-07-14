@@ -1,4 +1,4 @@
-# Simulate Conway's Game of Life.
+# Simulate Conway's Game of Life on the Casio fx-CG100.
 
 from casioplot import clear_screen, draw_string, set_pixel, show_screen
 import random
