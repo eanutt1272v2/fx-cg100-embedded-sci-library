@@ -1,3 +1,5 @@
+# Supporting companion library providing essential 2D and 3D shape property calculations for shapes.py on the Casio fx-CG100.
+
 import math
 
 PI = math.pi
