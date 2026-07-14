@@ -1,4 +1,4 @@
-# Visualise hydrogenic wavefunction probability densities on the Casio fx-CG100.
+# Visualise real hydrogenic wavefunction probability densities on the Casio fx-CG100.
 
 from casioplot import clear_screen, draw_string, set_pixel, show_screen
 from math import log, exp, pi, sqrt, sin, cos
