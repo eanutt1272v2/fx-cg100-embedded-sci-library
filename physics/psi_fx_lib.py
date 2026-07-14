@@ -97,7 +97,7 @@ def read_text(prompt, default=None):
             return raw
         if default is not None:
             return default
-        print("Please enter a value.")
+        print("please enter a value.")
 
 
 def read_int(prompt, default=None, min_value=None, max_value=None):
@@ -109,13 +109,13 @@ def read_int(prompt, default=None, min_value=None, max_value=None):
             try:
                 value = int(raw)
             except ValueError:
-                print("Invalid integer. Try again.")
+                print("invalid integer. try again.")
                 continue
         if min_value is not None and value < min_value:
-            print("Value must be >= " + str(min_value))
+            print("value must be >= " + str(min_value))
             continue
         if max_value is not None and value > max_value:
-            print("Value must be <= " + str(max_value))
+            print("value must be <= " + str(max_value))
             continue
         return value
 
@@ -129,13 +129,13 @@ def read_float(prompt, default=None, min_value=None, max_value=None):
             try:
                 value = float(raw)
             except ValueError:
-                print("Invalid float. Try again.")
+                print("invalid float. try again.")
                 continue
         if min_value is not None and value < min_value:
-            print("Value must be >= " + str(min_value))
+            print("value must be >= " + str(min_value))
             continue
         if max_value is not None and value > max_value:
-            print("Value must be <= " + str(max_value))
+            print("value must be <= " + str(max_value))
             continue
         return value
 
@@ -187,7 +187,7 @@ def wait_for_exit(getkey):
     if getkey is not None:
         getkey()
     else:
-        input("\nPress any key to exit: ")
+        input("\npress any key to exit: ")
 
 
 def _al(ll, mm, x):
@@ -287,3 +287,4 @@ class HydrogenicWavefunction:
             val = rv * yv * phase
             return val * val
         return rv * yv * rv * yv
+        
