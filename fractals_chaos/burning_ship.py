@@ -1,4 +1,4 @@
-# Render the Burning Ship fractal.
+# Render the Burning Ship fractal on the Casio fx-CG100.
 
 from casioplot import clear_screen, draw_string, set_pixel, show_screen
 from math import log
