@@ -1,4 +1,4 @@
-# Render the Sierpinski triangle fractal.
+# Render the Sierpinski triangle fractal on the Casio fx-CG100.
 
 import sys
 
