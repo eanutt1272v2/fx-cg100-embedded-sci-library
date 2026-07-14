@@ -1,10 +1,17 @@
 # Render the Sierpinski triangle fractal.
 
+import sys
+
 from turtle import backward, forward, goto, hideturtle, left, pencolor, pendown, penup, right, speed
 
-try:
-    from casioplot import getkey
-except ImportError:
+is_calculator = sys.platform == "casio" or "casio" in sys.platform.lower()
+
+if is_calculator:
+    try:
+        from casioplot import getkey
+    except ImportError:
+        getkey = None
+else:
     getkey = None
 
 
@@ -22,7 +29,7 @@ def read_int(prompt, default=None, min_value=None, max_value=None):
     while True:
         raw = input(prompt).strip()
         if raw == "" and default is not None:
-            value = default
+            value = int(default)
         else:
             try:
                 value = int(raw)
@@ -42,12 +49,12 @@ def read_float(prompt, default=None, min_value=None, max_value=None):
     while True:
         raw = input(prompt).strip()
         if raw == "" and default is not None:
-            value = default
+            value = float(default)
         else:
             try:
                 value = float(raw)
             except ValueError:
-                print("Invalid number. Try again.")
+                print("Invalid float. Try again.")
                 continue
         if min_value is not None and value < min_value:
             print("Value must be >= " + str(min_value))
@@ -90,7 +97,7 @@ def main():
     penup()
     goto(-80, -70)
     pendown()
-    pencolor("green")
+    pencolor("blue")
     depth = read_int("Depth (1-5): ")
     sierpinski(160, depth)
     wait_for_exit()

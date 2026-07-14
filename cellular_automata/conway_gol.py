@@ -23,7 +23,7 @@ def read_int(prompt, default=None, min_value=None, max_value=None):
     while True:
         raw = input(prompt).strip()
         if raw == "" and default is not None:
-            value = default
+            value = int(default)
         else:
             try:
                 value = int(raw)
@@ -43,12 +43,12 @@ def read_float(prompt, default=None, min_value=None, max_value=None):
     while True:
         raw = input(prompt).strip()
         if raw == "" and default is not None:
-            value = default
+            value = float(default)
         else:
             try:
                 value = float(raw)
             except ValueError:
-                print("Invalid number. Try again.")
+                print("Invalid float. Try again.")
                 continue
         if min_value is not None and value < min_value:
             print("Value must be >= " + str(min_value))

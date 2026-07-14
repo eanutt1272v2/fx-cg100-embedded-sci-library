@@ -64,11 +64,21 @@ cmap_data = [
 ]
 
 
+def read_text(prompt, default=None):
+    while True:
+        raw = input(prompt).strip()
+        if raw:
+            return raw
+        if default is not None:
+            return default
+        print("Please enter a value.")
+
+
 def read_int(prompt, default=None, min_value=None, max_value=None):
     while True:
         raw = input(prompt).strip()
         if raw == "" and default is not None:
-            value = default
+            value = int(default)
         else:
             try:
                 value = int(raw)
@@ -88,7 +98,7 @@ def read_float(prompt, default=None, min_value=None, max_value=None):
     while True:
         raw = input(prompt).strip()
         if raw == "" and default is not None:
-            value = default
+            value = float(default)
         else:
             try:
                 value = float(raw)
@@ -121,22 +131,32 @@ def horner(c, t):
         v = v * t + c[i]
     return v
 
+
 def cmap(t, rc, gc, bc):
-    if t < 0.0: t = 0.0
-    elif t > 1.0: t = 1.0
-    
+    if t < 0.0:
+        t = 0.0
+    elif t > 1.0:
+        t = 1.0
+
     r = int(horner(rc, t) * 255.0)
     g = int(horner(gc, t) * 255.0)
     b = int(horner(bc, t) * 255.0)
-    
-    if r < 0: r = 0
-    elif r > 255: r = 255
-    if g < 0: g = 0
-    elif g > 255: g = 255
-    if b < 0: b = 0
-    elif b > 255: b = 255
-    
+
+    if r < 0:
+        r = 0
+    elif r > 255:
+        r = 255
+    if g < 0:
+        g = 0
+    elif g > 255:
+        g = 255
+    if b < 0:
+        b = 0
+    elif b > 255:
+        b = 255
+
     return (r, g, b)
+
 
 def fmt_density(d):
     if d <= 0.0:
@@ -214,10 +234,10 @@ class HydrogenicWavefunction:
         self.p_rad = n - l - 1
         self.alpha_l = 2 * l + 1
         self.rho_k = 2.0 * Z / n
-        
+
         self.log_norm_r = 0.5 * (3 * log(self.rho_k) + lgamma(n - l) - log(2.0 * n) - lgamma(n + l + 1))
         self.norm_r = exp(self.log_norm_r)
-        
+
         self.log_norm_y = 0.5 * (log((2 * l + 1) / (4 * pi)) + lgamma(l - self.abs_m + 1) - lgamma(l + self.abs_m + 1))
         if m != 0:
             self.log_norm_y += 0.5 * log(2.0)
@@ -269,5 +289,5 @@ class HydrogenicWavefunction:
                 yv = self.y_norm * p * cos(self.m * phi_loc)
             else:
                 yv = self.y_norm * p * sin(self.abs_m * phi_loc)
-                
+
         return yv * yv * rv * rv

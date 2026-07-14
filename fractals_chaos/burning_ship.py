@@ -23,7 +23,7 @@ def read_int(prompt, default=None, min_value=None, max_value=None):
     while True:
         raw = input(prompt).strip()
         if raw == "" and default is not None:
-            value = default
+            value = int(default)
         else:
             try:
                 value = int(raw)
@@ -43,12 +43,12 @@ def read_float(prompt, default=None, min_value=None, max_value=None):
     while True:
         raw = input(prompt).strip()
         if raw == "" and default is not None:
-            value = default
+            value = float(default)
         else:
             try:
                 value = float(raw)
             except ValueError:
-                print("Invalid number. Try again.")
+                print("Invalid float. Try again.")
                 continue
         if min_value is not None and value < min_value:
             print("Value must be >= " + str(min_value))
@@ -59,7 +59,7 @@ def read_float(prompt, default=None, min_value=None, max_value=None):
         return value
 
 
-CMAPS = [
+cmap_data = [
     (
         "cividis",
         [25.77607, -83.187239, 102.370492, -58.977031, 15.42921, -0.384689, -0.008973],
@@ -145,34 +145,37 @@ def wait_for_exit():
     if getkey is not None:
         getkey()
     else:
-        input("\nPress any key to exit: ")
+        input("\nPress Enter to exit: ")
 
 
 def main():
-    cr = read_float("cr (-0.5): ", default="-0.5")
-    ci = read_float("ci (-0.5): ", default="-0.5")
-    R = read_float("R (2.0): ", default="2.0")
+    if clear_screen is None:
+        print("Bypassing execution: Connect native environment framework.")
+        return
+
+    param_cr = read_float("cr (-0.5): ", default=-0.5)
+    param_ci = read_float("ci (-0.5): ", default=-0.5)
+    R = read_float("R (2.0): ", default=2.0)
     if R <= 0.0:
         R = 2.0
 
-    max_iter = read_int("max_iter (32-256): ", default="64")
+    max_iter = read_int("max_iter (32-256): ", default=64)
     if max_iter < 32:
         max_iter = 32
     elif max_iter > 256:
         max_iter = 256
 
-    print("Cmaps:")
-    for i in range(len(CMAPS)):
-        print(str(i + 1) + " " + CMAPS[i][0])
-    cm_idx = read_int("Select (1-" + str(len(CMAPS)) + "): ") - 1
-    if cm_idx < 0 or cm_idx >= len(CMAPS):
+    print("cmap_data:")
+    for i in range(len(cmap_data)):
+        print(str(i + 1) + " " + cmap_data[i][0])
+    cm_idx = read_int("Select (1-" + str(len(cmap_data)) + "): ") - 1
+    if cm_idx < 0 or cm_idx >= len(cmap_data):
         cm_idx = 0
-    cm_name, RC, GC, BC = CMAPS[cm_idx]
+    cm_name, RC, GC, BC = cmap_data[cm_idx]
 
     SCR_H = 190
     PY = 10
     SZ = SCR_H - PY
-    SAMP = SZ
     LEG_X = SZ + 4
     LEG_W = 10
     LEG_LABEL_X = LEG_X + LEG_W + 2
@@ -180,13 +183,26 @@ def main():
 
     step = R / (SZ / 2.0)
 
-    x_min = cr - step * (SZ / 2.0)
-    y_max = ci + step * (SZ / 2.0)
-    y_min = ci - step * (SZ / 2.0)
+    x_min = param_cr - step * (SZ / 2.0)
+    y_max = param_ci + step * (SZ / 2.0)
+    y_min = param_ci - step * (SZ / 2.0)
 
     clear_screen()
 
-    hdr = "Burning Ship | cmap=" + cm_name + " max_iter=" + str(max_iter) + " R=" + str(R) + " c=(" + str(cr) + "," + str(ci) + ")"
+    hdr = (
+        "Burning Ship: "
+        + "cm="
+        + cm_name
+        + " max_iter="
+        + str(max_iter)
+        + " R="
+        + str(int(R) if R == int(R) else round(R, 1))
+        + " c=("
+        + str(param_cr)
+        + ","
+        + str(param_ci)
+        + ")"
+    )
     draw_string(0, 0, hdr, (0, 0, 160), "small")
 
     sp = set_pixel
@@ -194,16 +210,16 @@ def main():
     log2 = log(2.0)
 
     for py in range(SZ):
-        ci = y_min + step * py
+        current_ci = y_min + step * py
         for px in range(SZ):
-            cr = x_min + step * px
+            current_cr = x_min + step * px
             zr = 0.0
             zi = 0.0
             n = 0
             while n < max_iter and zr * zr + zi * zi < 4.0:
                 ar = abs(zr)
                 ai = abs(zi)
-                zr, zi = ar * ar - ai * ai + cr, 2.0 * ar * ai + ci
+                zr, zi = ar * ar - ai * ai + current_cr, 2.0 * ar * ai + current_ci
                 n += 1
             if n == max_iter:
                 col = (0, 0, 0)
@@ -219,6 +235,7 @@ def main():
                     t = 1.0
                 col = cmap(t, RC, GC, BC)
             sp(px, PY + py, col)
+
         ss()
 
     for ly in range(LEG_H):

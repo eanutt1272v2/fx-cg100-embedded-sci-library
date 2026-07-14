@@ -1,12 +1,9 @@
-# Visualise hydrogenic wavefunctions on Casio fx-CG100.
+# Visualise hydrogenic wavefunctions on the Casio fx-CG100.
 
 from casioplot import clear_screen, draw_string, set_pixel, show_screen
 from math import log, exp, pi, sqrt, sin, cos
 
-from psi_pico_lib import (
-    cmap_data, cmap, fmt_density, read_float, read_int, wait_for_exit, 
-    HydrogenicWavefunction
-)
+from psi_fx_lib import cmap_data, cmap, fmt_density, read_float, read_int, wait_for_exit, HydrogenicWavefunction
 
 try:
     from casioplot import getkey
@@ -30,7 +27,8 @@ offset = read_float("Slice offset [a0] (default=0.0): ", default=0.0)
 phi_deg = read_float("phi_deg (real Ylm, default=33): ", default=33.0)
 phi_slice = phi_deg * pi / 180.0
 Z = read_float("Z (1=H): ")
-if Z <= 0.0: Z = 1.0
+if Z <= 0.0:
+    Z = 1.0
 
 R = read_float("R [a0] (0=auto): ")
 alpha = read_float("alpha (default=100): ", default=100.0)
@@ -50,11 +48,12 @@ cm_name, RC, GC, BC = cmap_data[cm_idx]
 
 if R <= 0.0:
     inner_term = n * n - l * (l + 1)
-    if inner_term < 0: inner_term = 0
+    if inner_term < 0:
+        inner_term = 0
     r_turn = (n * n + n * sqrt(inner_term)) / Z
-    
+
     R = r_turn * 1.35
-    
+
     abs_offset = abs(offset)
     if abs_offset > 0.0:
         R = sqrt(R * R + abs_offset * abs_offset)
@@ -87,7 +86,7 @@ else:
     r_ref = (n * n) / Z
     best_ang_d = -1.0
     th_max, ph_max = 0.0, 0.0
-    
+
     for r_probe in (0.6 * r_ref, 1.0 * r_ref, 1.4 * r_ref):
         for i in range(36):
             th = (i / 35.0) * pi
@@ -97,7 +96,7 @@ else:
                 ph = (j / 17.0) * 2.0 * pi
                 x_coord = r_probe * sin_th * cos(ph)
                 y_coord = r_probe * sin_th * sin(ph)
-                
+
                 d = density_3d_local(x_coord, y_coord, z_coord)
                 if d > best_ang_d:
                     best_ang_d = d
@@ -107,11 +106,11 @@ else:
     cos_tm = cos(th_max)
     cos_pm = cos(ph_max)
     sin_pm = sin(ph_max)
-    
+
     peak = 1e-30
     r_limit = r_ref * 2.5
     r_step = r_limit / 200.0
-    
+
     for i in range(201):
         r = i * r_step
         d = density_3d_local(r * sin_tm * cos_pm, r * sin_tm * sin_pm, r * cos_tm)
@@ -121,23 +120,28 @@ else:
 if peak < 1e-30:
     peak = 1e-30
 
-if alpha <= 0.0: alpha = 1e-6
+if alpha <= 0.0:
+    alpha = 1e-6
 log_alpha_plus_1 = log(1.0 + alpha)
 
 
 def main():
     clear_screen()
     Zs = str(int(Z)) if Z == int(Z) else str(Z)
-    
+
     hdr = (
         "Psi: "
-        "|" + str(n) + str(l) + str(m) + ">"
+        + "|"
+        + str(n)
+        + str(l)
+        + str(m)
+        + ">"
         + " Z="
         + Zs
         + " pl:"
         + plane_str
         + " off:"
-        + str(offset) 
+        + str(offset)
         + " cm="
         + cm_name
         + " R="
@@ -168,11 +172,13 @@ def main():
             u = -R + step * sx
             x3, y3, z3 = get_coords_local(u, v)
             d = density_3d_local(x3, y3, z3)
-            
+
             idx = int((d / peak) * 255)
-            if idx > 255: idx = 255
-            elif idx < 0: idx = 0
-            
+            if idx > 255:
+                idx = 255
+            elif idx < 0:
+                idx = 0
+
             sp(sx, py, color_lut[idx])
         ss()
 
@@ -180,7 +186,8 @@ def main():
     for py in range(LEG_H):
         t = 1.0 - py / leg_den
         col = cmap(t, RC, GC, BC)
-        for dx in range(LEG_W): sp(LEG_X + dx, PY + py, col)
+        for dx in range(LEG_W):
+            sp(LEG_X + dx, PY + py, col)
 
     for i in range(5):
         t = i / 4.0
@@ -193,7 +200,7 @@ def main():
         else:
             norm_tick = (exp(t_row * log_alpha_plus_1) - 1.0) / alpha
             d_tick = (peak * norm_tick) / unit_scale
-        
+
         label = fmt_density(d_tick) + unit_str
         ly = max(PY, min(PY + LEG_H - 8, ty - 4))
         draw_string(LEG_LABEL_X, ly, label, (0, 0, 0), "small")
