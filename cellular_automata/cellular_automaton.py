@@ -1,4 +1,4 @@
-# Optimised Cellular Automaton for the Casio fx-CG100
+# Simulate cellular automata on the Casio fx-CG100.
 
 from casioplot import clear_screen, set_pixel, show_screen
 
