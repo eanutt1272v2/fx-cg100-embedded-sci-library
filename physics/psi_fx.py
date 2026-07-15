@@ -1,5 +1,5 @@
 from casioplot import clear_screen, draw_string, set_pixel, show_screen
-from math import log, exp, pi, sqrt, sin, cos
+from math import pi, sqrt, sin, cos
 
 from psi_fx_lib import (
     cmap_registry,
@@ -21,19 +21,19 @@ n = read_int("n (default=4): ", min_value=1, default=4)
 l = read_int("l (0..n-1, default=1): ", min_value=0, max_value=n - 1, default=1)
 m = read_int("m (-l..l, default=0): ", min_value=-l, max_value=l, default=0)
 
-print("spherical harmonic basis:")
-print("1: real")
-print("2: cplx")
+print("Spherical Harmonic Basis:")
+print("1: Real")
+print("2: Complex")
 basis_choice = read_int(
-    "basis (1-2, default=1): ", min_value=1, max_value=2, default=1
+    "Basis (1-2, default=1): ", min_value=1, max_value=2, default=1
 )
 
-print("slice plane:")
-print("1: xz")
-print("2: xy")
-print("3: yz")
+print("Slice Plane:")
+print("1: XZ")
+print("2: XY")
+print("3: YZ")
 plane_choice = read_int(
-    "plane (1-3, default=1): ", min_value=1, max_value=3, default=1
+    "Plane (1-3, default=1): ", min_value=1, max_value=3, default=1
 )
 
 offset = read_float("offset [a0] (default=0.0): ", default=0.0)
@@ -45,30 +45,39 @@ R = read_float("R [a0] (0=auto, default=0.0): ", min_value=0.0, default=0.0)
 k_scale = read_float(
     "k_scale (default=1.5): ", min_value=1.0, max_value=3.0, default=1.5
 )
+
 gamma = read_float(
-    "gamma (default=1.0): ", min_value=0.01, max_value=1.0, default=1.0
+    "gamma (default=0.50): ", min_value=0.01, max_value=2.0, default=0.50
 )
 
-print("prob. density units:")
-print("1: [a0^-3] (atomic)")
-print("2: [m^-3] (si metric)")
+print("Prob. Density Units:")
+print("1: [a0^-3] (Atomic)")
+print("2: [m^-3] (SI Metric)")
 unit_choice = read_int(
-    "units (1-2, default=1): ", min_value=1, max_value=2, default=1
+    "Units (1-2, default=1): ", min_value=1, max_value=2, default=1
 )
 
-print("colour maps:")
+print("Colour Maps:")
 for idx in range(len(cmap_registry)):
     print(str(idx + 1) + ": " + cmap_registry[idx][0])
 cm_choice = read_int(
-    "palette (1-8, default=6): ", min_value=1, max_value=8, default=6
+    "Palette (1-8, default=6): ", min_value=1, max_value=8, default=6
 )
 
 
-basis_map = {1: "real", 2: "cplx"}
-basis_str = basis_map[basis_choice]
+BASIS_MAP = {1: "real", 2: "complex"}
+basis_str = BASIS_MAP[basis_choice]
 
-plane_map = {1: "xz", 2: "xy", 3: "yz"}
-plane_str = plane_map[plane_choice]
+PLANE_MAP = {1: "xz", 2: "xy", 3: "yz"}
+plane_str = PLANE_MAP[plane_choice]
+
+A0_M = 5.29177210903e-11
+A0_3 = A0_M * A0_M * A0_M
+UNIT_MAP = {
+    1: (1.0, " [a0^-3]"),
+    2: (A0_3, " [m^-3]")
+}
+unit_scale, unit_str = UNIT_MAP[unit_choice]
 
 cm_idx = cm_choice - 1
 cm_str, RC, GC, BC = cmap_registry[cm_idx]
@@ -91,11 +100,6 @@ LEG_X = SZ + 4
 LEG_W = 10
 LEG_LABEL_X = LEG_X + LEG_W + 2
 LEG_H = SZ
-
-A0_M = 5.29177210903e-11
-A0_3 = A0_M * A0_M * A0_M
-unit_scale = A0_3 if unit_choice == 2 else 1.0
-unit_str = " [m^-3]" if unit_choice == 2 else " [a0^-3]"
 
 wf = HydrogenicWavefunction(
     n, l, m, Z, phi_slice, plane_choice, offset, is_real=(basis_choice == 1)
@@ -186,8 +190,10 @@ def main():
     color_lut = []
     for i in range(256):
         norm = i / 255.0
-        val = norm**gamma
-        color_lut.append(cmap(val, RC, GC, BC))
+        color_lut.append(cmap(norm, RC, GC, BC))
+
+    vmax = peak
+    vmin = 0.0
 
     for sy in range(SAMP):
         v = R - step * sy
@@ -197,19 +203,29 @@ def main():
             x3, y3, z3 = get_coords_local(u, v)
             d = density_3d_local(x3, y3, z3)
 
-            idx = int((d / peak) * 255)
+            if d > vmax:
+                ratio = 1.0
+            elif d < vmin:
+                ratio = 0.0
+            else:
+                ratio = (d - vmin) / (vmax - vmin)
+
+            val_exposed = ratio ** gamma
+            idx = int(val_exposed * 255.0)
+
             if idx > 255:
                 idx = 255
             elif idx < 0:
                 idx = 0
 
             sp(sx, py, color_lut[idx])
+    
         ss()
 
     leg_den = LEG_H - 1 if LEG_H > 1 else 1
     for py in range(LEG_H):
         t = 1.0 - py / leg_den
-        col = cmap(t, RC, GC, BC)
+        col = color_lut[int(t * 255.0)]
         for dx in range(LEG_W):
             sp(LEG_X + dx, PY + py, col)
 
@@ -218,12 +234,14 @@ def main():
         ty = PY + int((1.0 - t) * leg_den)
         sp(LEG_X + LEG_W, ty, (0, 0, 0))
         sp(LEG_X + LEG_W + 1, ty, (0, 0, 0))
+        
         t_row = 1.0 - (ty - PY) / leg_den
         if t_row <= 0.0:
-            d_tick = 0.0
+            norm_tick = 0.0
         else:
             norm_tick = t_row ** (1.0 / gamma)
-            d_tick = (peak * norm_tick) / unit_scale
+            
+        d_tick = (vmin + norm_tick * (vmax - vmin)) / unit_scale
 
         label = fmt_density(d_tick) + unit_str
         ly = max(PY, min(PY + LEG_H - 8, ty - 4))
