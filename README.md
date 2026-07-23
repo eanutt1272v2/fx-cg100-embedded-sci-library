@@ -24,7 +24,7 @@ An open-source MicroPython library for the Casio fx-CG100 calculator, which curr
 
 #### 2. Selecting a script
 
-1. Every script in this repository is explicitly designed for the Casio fx-CG100. They are not guaranteed to function correctly on the Casio fx-CG50 or any other graphing calculcator.
+1. Every script in this repository is explicitly designed for the Casio fx-CG100. They are not guaranteed to function correctly on the Casio fx-CG50 or any other graphing calculator.
 2. Select your script by topic and expected runtime, and keep in mind that certain more advanced scripts may bring a longer runtime than others.
 3. Note that larger-scale programs (such as the hydrogen atomic orbital visualiser `psi_fx.py`) require their companion dependency files (`psi_fx_lib.py`) to be transferred to the exact same folder to execute successfully.
 4. When testing a script on-device for the first time, accept the default parameters by pressing the **[OK]** or **[EXE]** key on empty input prompts, and only increase complexity once the script produces any successful result.
@@ -54,7 +54,7 @@ Run any script directly from the repository root:
 
 ```bash
 python3 fractals_chaos/mandelbrot_set.py
-python3 phsyics/psi_fx.py
+python3 physics/psi_fx.py
 ```
 
 If working inside a virtual environment:
