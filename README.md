@@ -35,13 +35,13 @@ Copy the chosen `.py` script file (and its required `_lib.py` dependency file, i
 
 #### 4. Execution
 
-1. Safely eject the USB-C cable from your desktop computer to return the calculator to its normal operating system mode.
+1. Safely eject the calculator's drive volume from your desktop computer, then disconnect the USB-C cable to return the calculator to its normal operating system mode.
 > [!CAUTION]
-> **Never** pull the cable out without safely ejecting the drive volume first. Improper disconnection can corrupt the calculator's storage memory filesystem or cause unforseen consequences and may result in data loss.
+> **Never** pull the cable out without safely ejecting the drive volume first. Improper disconnection can corrupt the calculator's storage memory filesystem or cause unforeseen consequences and may result in data loss.
 2. Select the **Python** application from the calculator's main home icon grid either by arrow keys or the **[ALPHA] + [D]** shortcut and press the **[OK]** or **[EXE]** key to launch it.
 3. Press the **[⋯] (TOOLS)** key to open the **Tools** menu, select **[2] File >**, and then **[2] Open** to navigate to the **Load** menu to browse directories within the calculator's storage memory for your preferred script.
 4. Press the **[⟶|] (RIGHT TAB)** key to switch the active view from the **Editor** to the **Shell** tab, which will execute your script immediately. Alternatively, press the **[⋯] (TOOLS)** key to open the **Tools** menu, and select **[4] Run** to execute your script via the **Shell** tab.
-5. Input chosen configuration values at the on-screen shell input prompts. The script will wait upon completion to keep the output pinned to your screen until you press the **[AC]** or **[⏎] (RETURN)** key to exit.
+5. Input chosen configuration values at the on-screen shell input prompts. The script will pause upon completion to keep the output pinned to your screen until you press the **[AC]** or **[⏎] (RETURN)** key to exit.
 
 ### On desktop (for development and/or testing)
 
