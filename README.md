@@ -1,6 +1,6 @@
 # fx-cg100-embedded-sci-library
 
-An open-source MicroPython library for the Casio fx-CG100 calculator, including specialised scripts for fractal rendering and the plotting of hydrogenic orbital probability densities.
+An open-source MicroPython library for the Casio fx-CG100 calculator, and currently includes specialised scripts for fractal rendering and the plotting of hydrogenic orbital probability densities.
 
 ---
 
