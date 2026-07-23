@@ -1,7 +1,7 @@
 [project]
 name = "fx-cg100-embedded-sci-library"
 version = "1.0.0"
-description = "An open-source MicroPython library for the Casio fx-CG100 calculator, and currently includes specialised scripts for fractal rendering and the plotting of hydrogenic orbital probability densities."
+description = "An open-source MicroPython library for the Casio fx-CG100 calculator, which currently includes specialised scripts for fractal rendering and the plotting of hydrogenic orbital probability densities."
 requires-python = ">=3.11"
 dependencies = [
     "casioplot",
