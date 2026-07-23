@@ -65,6 +65,13 @@ If working inside a virtual environment:
 
 ---
 
+## Gallery/Examples
+
+- **Hydrogenic Orbital Rendering:** ![Hydrogenic Orbital Plot Placeholder](images/orbital.png)
+- **Fractal Rendering:** ![Fractal Render Placeholder](images/fractal.png)
+
+---
+
 ## Licence
 
 This repository is released under the [MIT Licence](LICENSE).
